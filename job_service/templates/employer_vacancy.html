@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Управление вакансией{% endblock %}
+{% block content %}
+    <div class="card">
+        <h1>{{ vacancy.title }} {% if vacancy.is_active == 0 %}<span class="status-rejected">(Закрыта)</span>{% endif %}</h1>
+        <p><strong>Компания:</strong> {{ vacancy.company }}</p>
+        <p><strong>Зарплата:</strong> {{ vacancy.salary }}</p>
+        <p>{{ vacancy.description }}</p>
+    </div>
+    <h2>Отклики ({{ applications|length }})</h2>
+    {% if applications %}
+        <ul class="applications-list">
+        {% for app in applications %}
+            <li class="card app-item">
+                <strong>{{ app.full_name }}</strong> ({{ app.email }}, {{ app.phone }})
+                <br>Статус: <span class="status-{{ app.status }}">{{ app.status }}</span>
+                <br><small>{{ app.created_at }}</small>
+                {% if app.status == 'pending' %}
+                <div class="actions">
+                    <form method="post" action="{{ url_for('update_application', app_id=app.id, new_status='accepted') }}" style="display:inline;">
+                        <button class="btn btn-accept">Принять</button>
+                    </form>
+                    <form method="post" action="{{ url_for('update_application', app_id=app.id, new_status='rejected') }}" style="display:inline;">
+                        <button class="btn btn-reject">Отклонить</button>
+                    </form>
+                </div>
+                {% endif %}
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Пока никто не откликнулся.</p>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Профиль{% endblock %}
+{% block content %}
+    <h1>Личный кабинет</h1>
+    <div class="profile-info card">
+        <h2>{{ user.username }} ({{ 'Работодатель' if user.role == 'employer' else 'Соискатель' }})</h2>
+        <form method="post">
+            <label>ФИО:</label>
+            <input type="text" name="full_name" value="{{ user.full_name }}">
+            <label>Email:</label>
+            <input type="email" name="email" value="{{ user.email }}">
+            <label>Телефон:</label>
+            <input type="text" name="phone" value="{{ user.phone }}">
+            <button type="submit" class="btn">Сохранить</button>
+        </form>
+    </div>
+
+    {% if user.role == 'employer' %}
+        <div class="card">
+            <h2>Мои вакансии</h2>
+            {% if my_vacancies %}
+                <ul class="vacancy-list">
+                {% for v in my_vacancies %}
+                    <li><a href="{{ url_for('employer_vacancy', id=v.id) }}">{{ v.title }}</a> – {{ v.salary }}</li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>У вас пока нет вакансий.</p>
+            {% endif %}
+            <a href="{{ url_for('create_vacancy') }}" class="btn">Создать новую вакансию</a>
+        </div>
+    {% else %}
+        <div class="card">
+            <h2>Мои отклики</h2>
+            {% if applications %}
+                <ul class="applications-list">
+                {% for a in applications %}
+                    <li>
+                        <strong>{{ a.title }}</strong> ({{ a.company }}) – статус:
+                        <span class="status-{{ a.status }}">{{ a.status }}</span>
+                        <br><small>от {{ a.created_at }}</small>
+                    </li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>Вы ещё не откликались на вакансии.</p>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endblock %}

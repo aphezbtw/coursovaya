@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Главная{% endblock %}
+{% block content %}
+    <h1>Добро пожаловать на портал службы занятости</h1>
+    <p>Здесь вы найдёте актуальные вакансии и сможете управлять своим профилем.</p>
+    <h2>Последние вакансии</h2>
+    {% if vacancies %}
+        <div class="card-grid">
+            {% for vac in vacancies %}
+                <div class="card">
+                    <h3>{{ vac.title }}</h3>
+                    <p><strong>{{ vac.company }}</strong> – {{ vac.salary }}</p>
+                    <p class="desc">{{ vac.description[:100] }}{% if vac.description|length > 100 %}...{% endif %}</p>
+                    <a href="{{ url_for('vacancy_detail', id=vac.id) }}" class="btn">Подробнее</a>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Вакансий пока нет.</p>
+    {% endif %}
+{% endblock %}

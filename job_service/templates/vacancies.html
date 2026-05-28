@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Все вакансии{% endblock %}
+{% block content %}
+    <h1>Вакансии</h1>
+    {% if vacancies %}
+        <div class="card-grid">
+            {% for vac in vacancies %}
+                <div class="card">
+                    <h3>{{ vac.title }}</h3>
+                    <p><strong>{{ vac.company }}</strong> – {{ vac.salary }}</p>
+                    <p class="desc">{{ vac.description[:100] }}{% if vac.description|length > 100 %}...{% endif %}</p>
+                    <a href="{{ url_for('vacancy_detail', id=vac.id) }}" class="btn">Подробнее</a>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Нет доступных вакансий.</p>
+    {% endif %}
+{% endblock %}

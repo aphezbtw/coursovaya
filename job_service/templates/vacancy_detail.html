@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}{{ vacancy.title }}{% endblock %}
+{% block content %}
+    <div class="card vacancy-full">
+        <h1>{{ vacancy.title }}</h1>
+        <p><strong>Компания:</strong> {{ vacancy.company }}</p>
+        <p><strong>Зарплата:</strong> {{ vacancy.salary }}</p>
+        <p><strong>Описание:</strong></p>
+        <p>{{ vacancy.description }}</p>
+        <p><small>Опубликовано: {{ vacancy.created_at }}</small></p>
+        {% if g.user and g.user.role == 'applicant' %}
+            {% if already_applied %}
+                <p class="status-pending">Вы уже откликнулись на эту вакансию.</p>
+            {% else %}
+                <form action="{{ url_for('apply', vacancy_id=vacancy.id) }}" method="post">
+                    <button type="submit" class="btn">Откликнуться</button>
+                </form>
+            {% endif %}
+        {% elif not g.user %}
+            <p><a href="{{ url_for('login') }}">Войдите</a>, чтобы откликнуться.</p>
+        {% endif %}
+    </div>
+{% endblock %}

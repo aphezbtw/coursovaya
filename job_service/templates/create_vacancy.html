@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Создать вакансию{% endblock %}
+{% block content %}
+    <h1>Новая вакансия</h1>
+    <form method="post" class="form-card">
+        <label>Название:</label>
+        <input type="text" name="title" required>
+        <label>Компания:</label>
+        <input type="text" name="company" required>
+        <label>Зарплата:</label>
+        <input type="text" name="salary">
+        <label>Описание:</label>
+        <textarea name="description" rows="5"></textarea>
+        <button type="submit" class="btn">Создать</button>
+    </form>
+{% endblock %}
