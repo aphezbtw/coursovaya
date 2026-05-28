@@ -15,6 +15,7 @@
             </a>
             <nav>
                 <a href="{{ url_for('index') }}"><i class="fa-solid fa-house"></i> Главная</a>
+                <a href="{{ url_for('about') }}"><i class="fa-solid fa-circle-info"></i> О нас</a>
                 <a href="{{ url_for('vacancies') }}"><i class="fa-solid fa-magnifying-glass"></i> Вакансии</a>
                 {% if g.user %}
                     <a href="{{ url_for('profile') }}"><i class="fa-solid fa-user"></i> Профиль</a>

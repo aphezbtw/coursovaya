@@ -424,6 +424,10 @@ def delete_vacancy(vacancy_id):
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
 if __name__ == '__main__':
     init_db()
     app.run(debug=True)
