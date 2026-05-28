@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Служба занятости – {% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <a href="{{ url_for('index') }}" class="logo">
+                <i class="fa-solid fa-briefcase"></i> Служба занятости
+            </a>
+            <nav>
+                <a href="{{ url_for('index') }}"><i class="fa-solid fa-house"></i> Главная</a>
+                <a href="{{ url_for('vacancies') }}"><i class="fa-solid fa-magnifying-glass"></i> Вакансии</a>
+                {% if g.user %}
+                    <a href="{{ url_for('profile') }}"><i class="fa-solid fa-user"></i> Профиль</a>
+                    {% if g.user.role == 'admin' %}
+                        <a href="{{ url_for('admin_panel') }}"><i class="fa-solid fa-shield-haltered"></i> Админка</a>
+                    {% endif %}
+                    <a href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket"></i> Выйти</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}"><i class="fa-solid fa-right-to-bracket"></i> Войти</a>
+                    <a href="{{ url_for('register') }}"><i class="fa-solid fa-user-plus"></i> Регистрация</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+    <main>
+        {% block hero %}{% endblock %}
+        <div class="container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+    <footer>
+        <p>© 2026 Центр занятости населения. Официальный портал.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Все вакансии{% endblock %}
+
+{% block content %}
+    <h1 style="margin-bottom: 20px;">Все вакансии</h1>
+    <form class="filter-bar" action="{{ url_for('vacancies') }}" method="get">
+        <input type="text" name="search" placeholder="Поиск..." value="{{ search }}" style="flex:1;">
+        <input type="number" name="salary_from" placeholder="От" value="{{ salary_from }}" style="width:120px;">
+        <input type="number" name="salary_to" placeholder="До" value="{{ salary_to }}" style="width:120px;">
+        <button type="submit" class="btn"><i class="fa-solid fa-search"></i> Найти</button>
+        <select name="sort" onchange="this.form.submit()">
+            <option value="date_desc" {% if sort == 'date_desc' %}selected{% endif %}>Новые</option>
+            <option value="date_asc" {% if sort == 'date_asc' %}selected{% endif %}>Старые</option>
+            <option value="salary_desc" {% if sort == 'salary_desc' %}selected{% endif %}>Зарплата ↓</option>
+            <option value="salary_asc" {% if sort == 'salary_asc' %}selected{% endif %}>Зарплата ↑</option>
+        </select>
+        <label>
+            <input type="checkbox" name="last_7_days" value="1" {% if last_7_days == '1' %}checked{% endif %} onchange="this.form.submit()">
+            За 7 дней
+        </label>
+    </form>
+
+    {% if vacancies %}
+        <div class="card-grid">
+            {% for vac in vacancies %}
+                <div class="card">
+                    <h3><a href="{{ url_for('vacancy_detail', id=vac.id) }}" style="color:inherit;text-decoration:none;">{{ vac.title }}</a></h3>
+                    <p class="company">{{ vac.company }}</p>
+                    <p class="salary">{{ format_salary(vac) }}</p>
+                    <p style="color:#64748b; font-size:0.9rem;">{{ vac.description[:100] }}{% if vac.description|length > 100 %}...{% endif %}</p>
+                    <div style="margin-top:10px;">
+                        <a href="{{ url_for('vacancy_detail', id=vac.id) }}" class="btn btn-outline btn-sm">Подробнее</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if total_pages > 1 %}
+        <div class="pagination">
+            {% for p in range(1, total_pages+1) %}
+                {% if p == page %}
+                    <span class="current">{{ p }}</span>
+                {% else %}
+                    <a href="?page={{ p }}&sort={{ sort }}&search={{ search }}&salary_from={{ salary_from }}&salary_to={{ salary_to }}&last_7_days={{ last_7_days }}">{{ p }}</a>
+                {% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% else %}
+        <p style="text-align:center;">Ничего не найдено.</p>
+    {% endif %}
+{% endblock %}

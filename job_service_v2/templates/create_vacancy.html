@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Создать вакансию{% endblock %}
+{% block content %}
+    <h1>Новая вакансия</h1>
+    <form method="post" class="form-card">
+        <label>Название:</label>
+        <input type="text" name="title" required>
+        <label>Компания:</label>
+        <input type="text" name="company" value="{{ user.company }}">
+        <label>Зарплата от (руб.):</label>
+        <input type="number" name="salary_from" placeholder="например 120000">
+        <label>до (руб.):</label>
+        <input type="number" name="salary_to" placeholder="например 150000">
+        <label>Описание:</label>
+        <textarea name="description" rows="5"></textarea>
+        <button type="submit" class="btn"><i class="fa-solid fa-plus"></i> Создать</button>
+    </form>
+{% endblock %}

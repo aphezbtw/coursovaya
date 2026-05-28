@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Вход{% endblock %}
+{% block content %}
+    <div class="form-card">
+        <h2>Вход в систему</h2>
+        <form method="post">
+            <label><i class="fa-solid fa-user"></i> Логин</label>
+            <input type="text" name="username" required>
+            <label><i class="fa-solid fa-key"></i> Пароль</label>
+            <input type="password" name="password" required>
+            <button type="submit" class="btn btn-gold" style="width:100%; margin-top:20px;">Войти</button>
+        </form>
+        <p style="text-align:center; margin-top:15px;">Нет аккаунта? <a href="{{ url_for('register') }}">Зарегистрироваться</a></p>
+    </div>
+{% endblock %}

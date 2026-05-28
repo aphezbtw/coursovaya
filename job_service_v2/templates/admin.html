@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Админ-панель{% endblock %}
+{% block content %}
+    <h1>Администрирование</h1>
+    <h2>Пользователи</h2>
+    <table>
+        <tr><th>ID</th><th>Логин</th><th>Роль</th><th>Действия</th></tr>
+        {% for u in users %}
+        <tr>
+            <td>{{ u.id }}</td>
+            <td>{{ u.username }}</td>
+            <td>{{ u.role }}</td>
+            <td>
+                <form method="post" action="{{ url_for('change_role', user_id=u.id) }}" style="display:inline;">
+                    <select name="role">
+                        <option value="applicant" {% if u.role == 'applicant' %}selected{% endif %}>Соискатель</option>
+                        <option value="employer" {% if u.role == 'employer' %}selected{% endif %}>Работодатель</option>
+                        <option value="admin" {% if u.role == 'admin' %}selected{% endif %}>Админ</option>
+                    </select>
+                    <button type="submit" class="btn">Сменить</button>
+                </form>
+                <form method="post" action="{{ url_for('delete_user', user_id=u.id) }}" style="display:inline;" onsubmit="return confirm('Удалить пользователя?');">
+                    <button class="btn btn-danger">Удалить</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Вакансии</h2>
+    <table>
+        <tr><th>ID</th><th>Название</th><th>Компания</th><th>Зарплата</th><th>Активна</th><th>Действие</th></tr>
+        {% for v in vacancies %}
+        <tr>
+            <td>{{ v.id }}</td>
+            <td>{{ v.title }}</td>
+            <td>{{ v.company }}</td>
+            <td>{{ format_salary(v) }}</td>
+            <td>{{ 'Да' if v.is_active else 'Нет' }}</td>
+            <td>
+                <form method="post" action="{{ url_for('delete_vacancy', vacancy_id=v.id) }}" onsubmit="return confirm('Удалить вакансию?');">
+                    <button class="btn btn-danger">Удалить</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

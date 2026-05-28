@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Главная{% endblock %}
+
+{% block hero %}
+<div class="hero">
+    <h1>Найдите работу своей мечты</h1>
+    <p>Актуальные вакансии от проверенных работодателей</p>
+    <form class="search-box" action="{{ url_for('index') }}" method="get">
+        <input type="text" name="search" placeholder="Поиск по названию, компании..." value="{{ search }}">
+        <input type="number" name="salary_from" placeholder="Зарплата от" value="{{ salary_from }}" style="max-width:150px;">
+        <button type="submit"><i class="fa-solid fa-search"></i> Найти</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block content %}
+    {% if stats %}
+    <div class="stats">
+        <div class="stat-item">
+            <h3>{{ stats.vacancies }}</h3>
+            <p>Активных вакансий</p>
+        </div>
+        <div class="stat-item">
+            <h3>{{ stats.applicants }}</h3>
+            <p>Соискателей</p>
+        </div>
+        <div class="stat-item">
+            <h3>{{ stats.employers }}</h3>
+            <p>Работодателей</p>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="filter-bar">
+        <label>Сортировать:</label>
+        <select name="sort" onchange="window.location.href='?sort='+this.value+'&search={{ search }}&salary_from={{ salary_from }}&salary_to={{ salary_to }}&last_7_days={{ last_7_days }}'">
+            <option value="date_desc" {% if sort == 'date_desc' %}selected{% endif %}>Новые сначала</option>
+            <option value="date_asc" {% if sort == 'date_asc' %}selected{% endif %}>Старые сначала</option>
+            <option value="salary_desc" {% if sort == 'salary_desc' %}selected{% endif %}>По зарплате (высокие)</option>
+            <option value="salary_asc" {% if sort == 'salary_asc' %}selected{% endif %}>По зарплате (низкие)</option>
+        </select>
+        <label>
+            <input type="checkbox" name="last_7_days" value="1" {% if last_7_days == '1' %}checked{% endif %}
+                   onchange="window.location.href='?sort={{ sort }}&search={{ search }}&salary_from={{ salary_from }}&salary_to={{ salary_to }}&last_7_days='+(this.checked ? '1':'0')">
+            Только за последние 7 дней
+        </label>
+    </div>
+
+    {% if vacancies %}
+        <div class="card-grid">
+            {% for vac in vacancies %}
+                <div class="card">
+                    <h3><a href="{{ url_for('vacancy_detail', id=vac.id) }}" style="color:inherit;text-decoration:none;">{{ vac.title }}</a></h3>
+                    <p class="company">{{ vac.company }}</p>
+                    <p class="salary">{{ format_salary(vac) }}</p>
+                    <p style="color:#64748b; font-size:0.9rem;">{{ vac.description[:100] }}{% if vac.description|length > 100 %}...{% endif %}</p>
+                    <div style="margin-top:10px;">
+                        <a href="{{ url_for('vacancy_detail', id=vac.id) }}" class="btn btn-outline btn-sm">Подробнее</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if total_pages > 1 %}
+        <div class="pagination">
+            {% for p in range(1, total_pages+1) %}
+                {% if p == page %}
+                    <span class="current">{{ p }}</span>
+                {% else %}
+                    <a href="?page={{ p }}&sort={{ sort }}&search={{ search }}&salary_from={{ salary_from }}&salary_to={{ salary_to }}&last_7_days={{ last_7_days }}">{{ p }}</a>
+                {% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% else %}
+        <p style="text-align:center; color:#64748b;">Вакансий не найдено.</p>
+    {% endif %}
+{% endblock %}

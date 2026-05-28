@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}Профиль{% endblock %}
+{% block content %}
+    <div class="card">
+        <div style="display: flex; gap: 20px; align-items: center;">
+            {% if user.avatar_file %}
+                <img src="{{ url_for('uploaded_file', filename=user.avatar_file) }}" class="profile-avatar" style="width:100px;height:100px;object-fit:cover;border-radius:50%;">
+            {% else %}
+                <i class="fa-solid fa-user-circle" style="font-size: 100px; color: #0b1e3d;"></i>
+            {% endif %}
+            <div>
+                <h2>{{ user.full_name or user.username }}</h2>
+                <p><strong>Роль:</strong> {{ {'applicant':'Соискатель','employer':'Работодатель','admin':'Администратор'}[user.role] }}</p>
+                {% if user.company %}<p><strong>Компания:</strong> {{ user.company }}</p>{% endif %}
+                {% if user.skills %}<p><strong>Навыки:</strong> {{ user.skills }}</p>{% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Редактировать профиль</h3>
+        <form method="post" enctype="multipart/form-data">
+            <label>ФИО:</label>
+            <input type="text" name="full_name" value="{{ user.full_name }}">
+            <label>Email:</label>
+            <input type="email" name="email" value="{{ user.email }}">
+            <label>Телефон:</label>
+            <input type="text" name="phone" value="{{ user.phone }}">
+            {% if user.role == 'employer' %}
+                <label>Компания:</label>
+                <input type="text" name="company" value="{{ user.company }}">
+            {% else %}
+                <label>Навыки:</label>
+                <input type="text" name="skills" value="{{ user.skills }}">
+            {% endif %}
+            <label>Аватар:</label>
+            <input type="file" name="avatar" accept="image/*">
+            {% if user.role == 'applicant' %}
+                <label>Резюме (PDF/DOC):</label>
+                <input type="file" name="resume">
+            {% endif %}
+            <button type="submit" class="btn" style="margin-top:15px;">Сохранить</button>
+        </form>
+    </div>
+
+    {% if user.role == 'employer' %}
+        <div class="card">
+            <h3>Мои вакансии</h3>
+            {% if my_vacancies %}
+                <ul class="vacancy-list">
+                {% for v in my_vacancies %}
+                    <li><a href="{{ url_for('employer_vacancy', id=v.id) }}">{{ v.title }}</a> ({{ v.salary_from or '?' }} – {{ v.salary_to or '?' }})</li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>Нет созданных вакансий.</p>
+            {% endif %}
+            <a href="{{ url_for('create_vacancy') }}" class="btn btn-gold">Создать вакансию</a>
+        </div>
+    {% else %}
+        <div class="card">
+            <h3>Мои отклики</h3>
+            {% if applications %}
+                <ul class="applications-list">
+                {% for a in applications %}
+                    <li>
+                        <strong>{{ a.title }}</strong> ({{ a.company }}) – {{ format_salary(a) }}<br>
+                        Статус: <span class="status-{{ a.status }}">{{ a.status }}</span>
+                        {% if a.status == 'pending' %}
+                            <form method="post" action="{{ url_for('withdraw_application', app_id=a.id) }}" style="display:inline;">
+                                <button class="btn btn-sm btn-outline" style="margin-left:10px;">Отозвать</button>
+                            </form>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>Нет активных откликов.</p>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endblock %}

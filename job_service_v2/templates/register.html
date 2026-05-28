@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Регистрация{% endblock %}
+{% block content %}
+    <h1>Регистрация</h1>
+    <form method="post" class="form-card">
+        <label><i class="fa-solid fa-user"></i> Имя пользователя:</label>
+        <input type="text" name="username" required maxlength="30">
+        <label><i class="fa-solid fa-key"></i> Пароль (мин. 4 симв.):</label>
+        <input type="password" name="password" required minlength="4">
+        <label><i class="fa-solid fa-key"></i> Подтверждение пароля:</label>
+        <input type="password" name="password2" required minlength="4">
+        <label>ФИО:</label>
+        <input type="text" name="full_name">
+        <label>Email:</label>
+        <input type="email" name="email">
+        <label>Телефон:</label>
+        <input type="text" name="phone">
+        <label>Роль:</label>
+        <select name="role">
+            <option value="applicant">Соискатель</option>
+            <option value="employer">Работодатель</option>
+        </select>
+        <label>Компания (для работодателя):</label>
+        <input type="text" name="company">
+        <label>Навыки (для соискателя):</label>
+        <input type="text" name="skills">
+        <button type="submit" class="btn"><i class="fa-solid fa-user-plus"></i> Зарегистрироваться</button>
+    </form>
+    <p>Уже есть аккаунт? <a href="{{ url_for('login') }}">Войти</a></p>
+{% endblock %}
